@@ -1,4 +1,4 @@
-
+package gov.va.med.beer;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
 
 public class BeerMain {
 
@@ -74,36 +76,36 @@ public class BeerMain {
 		//add up cost and count per type of beer
 		Integer beerCount = 0;
 		float beerCost = 0f;
-
+		Integer alcoholContent = 0;
+		
 		//total combined count and cost of beer
 		Integer totCount = 0;
 		float totRevenue = 0f;
-
-		for (String beerKey : beerMap.keySet()) {
+		//creates Iterator to navigate through our map.
+		Iterator<Map.Entry<String, ArrayList<BeerProfile>>> it = beerMap.entrySet().iterator();
+		
+		while(it.hasNext()) {
 			//get ArrayList for key
 			ArrayList<BeerProfile> beerProfileList = new ArrayList<BeerProfile>();
+			Map.Entry<String, ArrayList<BeerProfile>> entry = it.next();
+			
+			beerProfileList = entry.getValue();
 
-			beerProfileList = beerMap.get(beerKey);
-
-			System.out.println((beerKey + " BEERS:").toUpperCase()); //print heading
+			System.out.println((entry.getKey() + " BEERS:").toUpperCase()); //print heading
 
 			for (BeerProfile profileElement : beerProfileList) {
 
 				//add up totals while looping for each beer type
 				beerCost += profileElement.getBeerCost();
 				beerCount += profileElement.getNumberSold();
+				alcoholContent = profileElement.getAlcoholContent();
+	
+				System.out.println("* "+profileElement.getBeerName()+" - Color: "+profileElement.getColor() + " - Alcohol Content: " + alcoholContent + "%");
 				
-				System.out.println("* "+profileElement.getBeerName()+" - Color: "+profileElement.getColor());
 			}
 			//add to totals
 			totCount += beerCount;
-			totRevenue += (beerCount * beerCost);
-
-			//print per type of beer
-//			System.out.println("* Total count of " + beerKey + " sold: " + beerCount);
-//			System.out.println("* Total revenue of " + beerKey + " sold: " + currencyFormat.format(beerCount * beerCost));
-//			System.out.println("Beer Color: ");
-//			System.out.println(" ------------------------------------------------------ "); //add separator between prints			
+			totRevenue += (beerCount * beerCost);	
 
 			//reset for next type
 			beerCount = 0;
